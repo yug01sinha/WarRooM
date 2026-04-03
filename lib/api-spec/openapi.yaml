@@ -1,0 +1,647 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Exam War Room API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: groq
+    description: AI operations via Groq
+  - name: pdf
+    description: PDF extraction
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /groq/chat:
+    post:
+      operationId: groqChat
+      tags: [groq]
+      summary: General chat completion via Groq
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GroqChatRequest"
+      responses:
+        "200":
+          description: Chat response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroqChatResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /groq/tutor:
+    post:
+      operationId: groqTutor
+      tags: [groq]
+      summary: AI tutor response for a subject/chapter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TutorRequest"
+      responses:
+        "200":
+          description: Tutor response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroqChatResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /groq/doubt:
+    post:
+      operationId: groqDoubt
+      tags: [groq]
+      summary: Doubt solver via Groq
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DoubtRequest"
+      responses:
+        "200":
+          description: Doubt answer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroqChatResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /groq/generate-test:
+    post:
+      operationId: groqGenerateTest
+      tags: [groq]
+      summary: Generate a mock test
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateTestRequest"
+      responses:
+        "200":
+          description: Generated test questions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateTestResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /groq/analyze-results:
+    post:
+      operationId: groqAnalyzeResults
+      tags: [groq]
+      summary: SWOT analysis of test results
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeResultsRequest"
+      responses:
+        "200":
+          description: SWOT analysis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SwotAnalysis"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /groq/generate-plan:
+    post:
+      operationId: groqGeneratePlan
+      tags: [groq]
+      summary: Generate a study plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GeneratePlanRequest"
+      responses:
+        "200":
+          description: Study plan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneratePlanResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /groq/notes-chat:
+    post:
+      operationId: groqNotesChat
+      tags: [groq]
+      summary: Chat with uploaded notes document context
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotesChatRequest"
+      responses:
+        "200":
+          description: Notes chat answer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroqChatResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /groq/evaluate-answer:
+    post:
+      operationId: groqEvaluateAnswer
+      tags: [groq]
+      summary: Evaluate a student answer for comprehension
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EvaluateAnswerRequest"
+      responses:
+        "200":
+          description: Evaluation feedback
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GroqChatResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /extract-pdf:
+    post:
+      operationId: extractPdf
+      tags: [pdf]
+      summary: Extract text from uploaded PDF
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExtractPdfRequest"
+      responses:
+        "200":
+          description: Extracted PDF text
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtractPdfResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    GroqMessage:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [system, user, assistant]
+        content:
+          type: string
+      required:
+        - role
+        - content
+
+    GroqChatRequest:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/GroqMessage"
+        stream:
+          type: boolean
+      required:
+        - messages
+
+    GroqChatResponse:
+      type: object
+      properties:
+        content:
+          type: string
+      required:
+        - content
+
+    TutorRequest:
+      type: object
+      properties:
+        subject:
+          type: string
+        chapter:
+          type: string
+        previousMessages:
+          type: array
+          items:
+            $ref: "#/components/schemas/GroqMessage"
+      required:
+        - subject
+        - chapter
+
+    DoubtRequest:
+      type: object
+      properties:
+        question:
+          type: string
+        subject:
+          type: ["string", "null"]
+        previousMessages:
+          type: array
+          items:
+            $ref: "#/components/schemas/GroqMessage"
+      required:
+        - question
+
+    GenerateTestRequest:
+      type: object
+      properties:
+        subject:
+          type: string
+        testType:
+          type: string
+          enum: [full_mock, chapter_test, mini_test, speed_round]
+        chapter:
+          type: ["string", "null"]
+        numQuestions:
+          type: integer
+      required:
+        - subject
+        - testType
+
+    TestQuestion:
+      type: object
+      properties:
+        question_number:
+          type: integer
+        question_text:
+          type: string
+        question_type:
+          type: string
+          enum: [mcq, short_answer, long_answer]
+        marks:
+          type: integer
+        options:
+          type: ["array", "null"]
+          items:
+            type: string
+        correct_answer:
+          type: string
+        explanation:
+          type: string
+      required:
+        - question_number
+        - question_text
+        - question_type
+        - marks
+        - correct_answer
+        - explanation
+
+    GenerateTestResponse:
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/TestQuestion"
+      required:
+        - questions
+
+    WrongAnswer:
+      type: object
+      properties:
+        question:
+          type: string
+        userAnswer:
+          type: string
+        correctAnswer:
+          type: string
+        topic:
+          type: string
+      required:
+        - question
+        - userAnswer
+        - correctAnswer
+        - topic
+
+    AnalyzeResultsRequest:
+      type: object
+      properties:
+        subject:
+          type: string
+        wrongAnswers:
+          type: array
+          items:
+            $ref: "#/components/schemas/WrongAnswer"
+        score:
+          type: integer
+        total:
+          type: integer
+      required:
+        - subject
+        - wrongAnswers
+        - score
+        - total
+
+    SwotAnalysis:
+      type: object
+      properties:
+        strengths:
+          type: array
+          items:
+            type: string
+        weaknesses:
+          type: array
+          items:
+            type: string
+        opportunities:
+          type: array
+          items:
+            type: string
+        threats:
+          type: array
+          items:
+            type: string
+        time_analysis:
+          type: string
+        error_pattern:
+          type: string
+      required:
+        - strengths
+        - weaknesses
+        - opportunities
+        - threats
+        - time_analysis
+        - error_pattern
+
+    ExamDate:
+      type: object
+      properties:
+        subject:
+          type: string
+        date:
+          type: string
+      required:
+        - subject
+        - date
+
+    WeakTopic:
+      type: object
+      properties:
+        subject:
+          type: string
+        chapter:
+          type: string
+        confidence_score:
+          type: integer
+      required:
+        - subject
+        - chapter
+        - confidence_score
+
+    GeneratePlanRequest:
+      type: object
+      properties:
+        examDates:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExamDate"
+        availableHoursPerDay:
+          type: number
+        weakTopics:
+          type: array
+          items:
+            $ref: "#/components/schemas/WeakTopic"
+        daysCount:
+          type: integer
+      required:
+        - examDates
+        - availableHoursPerDay
+
+    StudyPlanDay:
+      type: object
+      properties:
+        date:
+          type: string
+        subject:
+          type: string
+        chapters:
+          type: array
+          items:
+            type: string
+        tasks:
+          type: array
+          items:
+            type: string
+        estimated_minutes:
+          type: integer
+        is_mock_test_day:
+          type: boolean
+      required:
+        - date
+        - subject
+        - chapters
+        - tasks
+        - estimated_minutes
+        - is_mock_test_day
+
+    GeneratePlanResponse:
+      type: object
+      properties:
+        plan:
+          type: array
+          items:
+            $ref: "#/components/schemas/StudyPlanDay"
+      required:
+        - plan
+
+    NotesChatRequest:
+      type: object
+      properties:
+        question:
+          type: string
+        documentText:
+          type: string
+        previousMessages:
+          type: array
+          items:
+            $ref: "#/components/schemas/GroqMessage"
+      required:
+        - question
+        - documentText
+
+    EvaluateAnswerRequest:
+      type: object
+      properties:
+        subject:
+          type: string
+        chapter:
+          type: string
+        teachingContent:
+          type: string
+        comprehensionQuestion:
+          type: string
+        studentAnswer:
+          type: string
+      required:
+        - subject
+        - chapter
+        - teachingContent
+        - comprehensionQuestion
+        - studentAnswer
+
+    ExtractPdfRequest:
+      type: object
+      properties:
+        storagePath:
+          type: string
+        docId:
+          type: string
+      required:
+        - storagePath
+        - docId
+
+    ExtractPdfResponse:
+      type: object
+      properties:
+        text:
+          type: string
+        docId:
+          type: string
+      required:
+        - text
+        - docId
