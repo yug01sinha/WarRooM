@@ -4,23 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base Military Theme */
-:root {
---background: 226 44% 7%;
---foreground: 120 20% 90%;
---primary: 153 100% 50%;
---accent: 51 100% 50%;
---destructive: 0 100% 50%;
-
---app-font-sans: 'Rajdhani', sans-serif;
---app-font-mono: 'Share Tech Mono', monospace;
-}
-
-@layer base {
-body {
-font-family: var(--app-font-sans);
-background-color: hsl(var(--background));
-color: hsl(var(--foreground));
 :root {
   --background: 226 44% 7%;
   --foreground: 120 20% 90%;
@@ -42,8 +25,14 @@ color: hsl(var(--foreground));
   --input: 226 30% 15%;
   --ring: 153 100% 50%;
   --radius: 0.5rem;
-
   --app-font-sans: 'Rajdhani', sans-serif;
   --app-font-mono: 'Share Tech Mono', monospace;
-}}
+}
+
+@layer base {
+  body {
+    font-family: var(--app-font-sans);
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
 }
